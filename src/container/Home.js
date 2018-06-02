@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import * as Actions from '../actions';
 import { bindActionCreators } from 'redux';
 
+import Header from '../presentation/Header';
+
 const mapStateToProps = (state, ownProps) => ({
   
 })
@@ -17,9 +19,7 @@ export class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+        <Header style={styles.header}/>
       </View>
     )
   }
@@ -29,9 +29,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    justifyContent: 'flex-start',
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
