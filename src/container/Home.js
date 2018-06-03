@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 
 import { connect } from 'react-redux';
 import {
@@ -8,6 +8,7 @@ import {
 
 import Header from '../presentation/Header';
 import List from '../presentation/List';
+import { SearchBar } from 'react-native-elements';
 
 const mapStateToProps = (state, ownProps) => ({
   coin: state.coin
@@ -21,27 +22,59 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Home extends Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      coins: {}
+    }
+  }
+  
+
   componentDidMount() {
     const { coinActions, dispatch } = this.props; 
     this.props.fetchCoinList(() => {
-      console.log('fetched');
+      this.setState({ coins: this.props.coin.coinList })
     })
   }
 
   refreshPage = () => {
     this.props.fetchCoinList(() => {
-      console.log('fetched');
+      this.setState({ coins: this.props.coin.coinList })
     })
   }
+
+  onSearchChange = (text) => {
+    const { coinList } = this.props.coin;
+    this.setState({
+      coins: coinList.filter((coin) => coin.CoinName.includes(text))
+    })
+  }
+
+  onClearSearch = () => {
+    this.setState({ coins: this.props.coin.coinList })
+  }
+
   render() {
-    const { coin } = this.props;
+    const { coins } = this.state;
+    console.log(coins)
     return (
       <View style={styles.container}>
         <Header style={styles.header}/>
-        <List 
-          data={coin.coinList} 
-          refreshData={this.refreshPage}
-          />
+        <SearchBar
+          lightTheme
+          onChangeText={this.onSearchChange}
+          onClearText={this.onClearSearch}
+          icon={{ type: 'font-awesome', name: 'search' }}
+          placeholder='Type Here...' />
+          {
+            (coins && coins.length > 0) ?
+            <List 
+              data={coins} 
+              refreshData={this.refreshPage}
+              />
+            :
+            <ActivityIndicator size="large" color="#424242" style={styles.loader}/>
+          }
       </View>
     )
   }
@@ -52,6 +85,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     justifyContent: 'flex-start',
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 

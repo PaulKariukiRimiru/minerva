@@ -20,6 +20,7 @@ export const coinListFetch = callBack => (dispatch) => {
       };
       return (dispatch(coinListFetchAction(payload)));
     })
+    .then(() => callBack())
     .catch((error) => {
       return(
         dispatch(errored(error.message))
