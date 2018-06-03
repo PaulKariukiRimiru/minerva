@@ -1,19 +1,11 @@
 import { combineReducers } from 'redux';
-import { persistReducer } from 'redux-persist';
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
-import storage from 'redux-persist/lib/storage';
 import users from './users';
+import coin from './coin';
 
-const rootConfig = {
-  key: 'root',
-  storage,
-  stateReconciler: autoMergeLevel2
-};
 
 const rootReducer = combineReducers({
- users
+ users,
+ coin
 });
 
-const persistedReducer = persistReducer(rootConfig, rootReducer);
-
-export default persistedReducer;
+export default rootReducer;

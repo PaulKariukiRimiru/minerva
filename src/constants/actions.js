@@ -1,0 +1,2 @@
+export const COIN_LIST_FETCHED = 'COIN_LIST_FETCHED';
+export const ERRORED = 'ERRORED';

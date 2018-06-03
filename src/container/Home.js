@@ -2,24 +2,38 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { connect } from 'react-redux';
-import * as Actions from '../actions';
-import { bindActionCreators } from 'redux';
+import {
+  coinListFetch
+} from '../actions/coin';
 
 import Header from '../presentation/Header';
+import List from '../presentation/List';
 
 const mapStateToProps = (state, ownProps) => ({
-  
+  coin: state.coin
 })
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(Actions, dispatch)
-}
+const mapDispatchToProps = (dispatch) => ({
+  fetchCoinList: (callBack) => {
+    dispatch(coinListFetch(callBack))
+  }
+});
 
-export class Home extends Component {
+class Home extends Component {
+
+  componentDidMount() {
+    const { coinActions, dispatch } = this.props; 
+    this.props.fetchCoinList(() => {
+      console.log('fetched');
+    })
+  }
+
   render() {
+    const { coin } = this.props;
     return (
       <View style={styles.container}>
         <Header style={styles.header}/>
+        <List data={coin.coinList} />
       </View>
     )
   }
