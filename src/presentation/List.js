@@ -11,10 +11,12 @@ export default class MyList extends Component {
         avatar={baseImageUrl+coin.item.ImageUrl}
         title={coin.item.CoinName}
         subtitle={coin.item.Name}
-        key={coin.item.Id}
-        keyExtractor={(coin, index) => coin.item.Id }
       />
     )
+  }
+
+  refreshData = () => {
+    this.props.refreshData()
   }
 
   render() {
@@ -22,9 +24,10 @@ export default class MyList extends Component {
     return (
       <FlatList
         data={data}
+        refreshing={false}
         onRefresh={this.refreshData}
         renderItem={this.renderItem}
-        keyExtractor={(item, index) => item.index }
+        keyExtractor={(item, index) => item.Id}
       />
     )
   }

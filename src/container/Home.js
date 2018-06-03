@@ -28,12 +28,20 @@ class Home extends Component {
     })
   }
 
+  refreshPage = () => {
+    this.props.fetchCoinList(() => {
+      console.log('fetched');
+    })
+  }
   render() {
     const { coin } = this.props;
     return (
       <View style={styles.container}>
         <Header style={styles.header}/>
-        <List data={coin.coinList} />
+        <List 
+          data={coin.coinList} 
+          refreshData={this.refreshPage}
+          />
       </View>
     )
   }
