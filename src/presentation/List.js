@@ -11,6 +11,7 @@ export default class MyList extends Component {
         avatar={baseImageUrl+coin.item.ImageUrl}
         title={coin.item.CoinName}
         subtitle={coin.item.Name}
+        onPress={() => this.props.onCoinSelected(coin)}
       />
     )
   }

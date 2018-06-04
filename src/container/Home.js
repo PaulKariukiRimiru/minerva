@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator,Button } from 'react-native';
 
 import { connect } from 'react-redux';
 import {
@@ -20,6 +20,7 @@ const mapDispatchToProps = (dispatch) => ({
   }
 });
 
+
 class Home extends Component {
 
   constructor(props) {
@@ -28,7 +29,9 @@ class Home extends Component {
       coins: {}
     }
   }
-  
+  static navigationOptions = {
+    drawerLabel: 'Home'
+  };
 
   componentDidMount() {
     const { coinActions, dispatch } = this.props; 
@@ -54,12 +57,14 @@ class Home extends Component {
     this.setState({ coins: this.props.coin.coinList })
   }
 
+  onCoinSelected = (coin) => {
+    this.props.navigation.navigate('coinProfile',{ coin })
+  }
+
   render() {
     const { coins } = this.state;
-    console.log(coins)
     return (
       <View style={styles.container}>
-        <Header style={styles.header}/>
         <SearchBar
           lightTheme
           onChangeText={this.onSearchChange}
@@ -68,7 +73,8 @@ class Home extends Component {
           placeholder='Type Here...' />
           {
             (coins && coins.length > 0) ?
-            <List 
+            <List
+              onCoinSelected={this.onCoinSelected} 
               data={coins} 
               refreshData={this.refreshPage}
               />
