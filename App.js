@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from './src/store';
 import Home from './src/container/Home';
-import CoinProfile from './src/container/CoinProfile';
+import CoinProfile from './src/container/Containers/CoinProfile';
 import { createStackNavigator, createDrawerNavigator } from 'react-navigation';
 import Header from './src/presentation/Header';
 import {

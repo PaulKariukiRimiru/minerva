@@ -1,2 +1,4 @@
 export const COIN_LIST_FETCHED = 'COIN_LIST_FETCHED';
+export const COIN_PROFILE_FETCHED = 'COIN_PROFILE_FETCHED';
+export const FETCHING = 'FETCHING';
 export const ERRORED = 'ERRORED';

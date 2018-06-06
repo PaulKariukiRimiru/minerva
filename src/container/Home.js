@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator,Button } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, Button } from 'react-native';
 
 import { connect } from 'react-redux';
 import {
@@ -66,7 +66,7 @@ class Home extends Component {
     return (
       <View style={styles.container}>
         <SearchBar
-          lightTheme
+          containerStyle={{backgroundColor: '#424242'}}
           onChangeText={this.onSearchChange}
           onClearText={this.onClearSearch}
           icon={{ type: 'font-awesome', name: 'search' }}

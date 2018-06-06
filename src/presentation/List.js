@@ -1,17 +1,23 @@
 import React, { Component } from 'react'
 import { View, FlatList, StyleSheet } from 'react-native';
-import { ListItem} from 'react-native-elements';
+import ListItem from '../presentation/ListItem';
 import { baseImageUrl } from '../constants/axiosInstance';
 
 export default class MyList extends Component {
 
+  onPress = (coin) => {
+    this.props.onCoinSelected(coin)
+  }
+
   renderItem = (coin) => {
     return (
       <ListItem 
-        avatar={baseImageUrl+coin.item.ImageUrl}
-        title={coin.item.CoinName}
-        subtitle={coin.item.Name}
-        onPress={() => this.props.onCoinSelected(coin)}
+        coin={coin.item}
+        onPress={this.onPress}
+        initialNumToRender={20}
+        getItemLayout={(data, index) => (
+          {length: 60, offset: 60 * index, index}
+        )}
       />
     )
   }
@@ -26,9 +32,19 @@ export default class MyList extends Component {
       <FlatList
         data={data}
         refreshing={false}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={1000}
+        updateCellsBatchingPeriod={500}
         onRefresh={this.refreshData}
         renderItem={this.renderItem}
         keyExtractor={(item, index) => item.Id}
+        getItemLayout={(data, index) => {
+          return ({
+            length: 70,
+            offset: 70 * index,
+            index
+          })
+        }}
       />
     )
   }

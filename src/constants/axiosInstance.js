@@ -9,3 +9,4 @@ export const baseInstance = axios.create({
 })
 
 export const baseImageUrl = 'https://www.cryptocompare.com';
+export const baseSocketUrl = 'https://streamer.cryptocompare.com/';

@@ -1,6 +1,6 @@
 import { baseInstance } from '../constants/axiosInstance';
 import { COIN_LIST_FETCHED, ERRORED } from '../constants/actions';
-
+import { fetching } from './calls';
 const coinListFetchAction = (payload) => ({
   type: COIN_LIST_FETCHED,
   payload
@@ -11,6 +11,7 @@ const errored = payload => ({
 })
 
 export const coinListFetch = callBack => (dispatch) => {
+  dispatch(fetching());
   baseInstance.get('/api/data/coinlist/')
   .then((resp) => {
       const coins = resp.data.Data;
@@ -25,5 +26,5 @@ export const coinListFetch = callBack => (dispatch) => {
       return(
         dispatch(errored(error.message))
       );
-    })
+    });
 };
