@@ -13,6 +13,7 @@ export default class MyList extends Component {
     return (
       <ListItem 
         coin={coin.item}
+        view={this.props.view}
         onPress={this.onPress}
         initialNumToRender={20}
         getItemLayout={(data, index) => (

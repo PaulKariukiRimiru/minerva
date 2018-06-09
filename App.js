@@ -1,8 +1,9 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from './src/store';
-import Home from './src/container/Home';
-import CoinProfile from './src/container/Containers/CoinProfile';
+import Home from './src/pages/Home';
+import CoinProfile from './src/pages/Containers/CoinProfile';
+import WelcomePage from './src/pages/Containers/WelcomePage';
 import { createStackNavigator, createDrawerNavigator } from 'react-navigation';
 import Header from './src/presentation/Header';
 import {
@@ -14,7 +15,8 @@ import {
 RenderScene = createStackNavigator(
   {
     home: Home,
-    coinProfile: CoinProfile
+    coinProfile: CoinProfile,
+    welcome: WelcomePage
   },
   {
     initialRouteName: 'home',

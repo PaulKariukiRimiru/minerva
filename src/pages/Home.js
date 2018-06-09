@@ -74,6 +74,7 @@ class Home extends Component {
           {
             (coins && coins.length > 0) ?
             <List
+              view='home'
               onCoinSelected={this.onCoinSelected} 
               data={coins} 
               refreshData={this.refreshPage}
