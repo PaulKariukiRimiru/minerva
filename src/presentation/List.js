@@ -5,6 +5,10 @@ import { baseImageUrl } from '../constants/axiosInstance';
 
 export default class MyList extends Component {
 
+  state = {
+    refresh: false
+  }
+
   onPress = (coin) => {
     this.props.onCoinSelected(coin)
   }
@@ -23,6 +27,14 @@ export default class MyList extends Component {
     )
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props !== nextProps) {
+      this.setState({
+        refresh: !this.state.refresh
+      })
+    }
+  }
+
   refreshData = () => {
     this.props.refreshData()
   }
@@ -39,6 +51,7 @@ export default class MyList extends Component {
         onRefresh={this.refreshData}
         renderItem={this.renderItem}
         keyExtractor={(item, index) => item.Id}
+        extraData={this.state.refresh}
         getItemLayout={(data, index) => {
           return ({
             length: 70,

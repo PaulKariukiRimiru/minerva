@@ -8,10 +8,6 @@ export default class ListItem extends Component {
     this.props.onPress(this.props.coin);
   }
 
-  shouldComponentUpdate(){
-    return false
-  }
-
   renderHomeItem = () => {
     const { coin } = this.props
     return (
