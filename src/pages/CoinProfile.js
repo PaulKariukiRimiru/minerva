@@ -26,9 +26,11 @@ class CoinProfile extends Component {
     const coin = navigation.getParam('coin')
 
     fetchProfile(coin.Id, () => {
-      const { coinProfile } = this.props;
-      socket.on('m', resp => this.updateCoinStatus(resp))
-      socket.emit('SubAdd', { subs:  coinProfile.Subs } );
+      fetchSocials(coin.Id, () => {
+        const { coinProfile } = this.props;
+        socket.on('m', resp => this.updateCoinStatus(resp))
+        socket.emit('SubAdd', { subs:  coinProfile.Subs } );
+      })
     })
   }
 
