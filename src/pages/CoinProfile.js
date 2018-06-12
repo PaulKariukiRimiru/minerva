@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator, Dimensions } from 'react-native';
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import { baseImageUrl, baseSocketUrl } from '../constants/axiosInstance';
 import openSocket from 'socket.io-client';
 import List from '../presentation/List';
 
+const window = Dimensions.get('window');
 class CoinProfile extends Component {
   static navigationOptions = {
     title: 'Profile',
@@ -26,7 +28,7 @@ class CoinProfile extends Component {
     fetchProfile(coin.Id, () => {
       fetchSocials(coin.Id, () => {
         const { coinProfile } = this.props;
-        this.processSocialInfo()
+        this.processSocialInfo();
         this.socket.on('m', resp => this.updateCoinStatus(resp));
         this.socket.emit('SubAdd', { subs:  coinProfile.Subs } );
       });
@@ -88,6 +90,7 @@ class CoinProfile extends Component {
               url: '',
               icon: '',
               Id: Math.random(),
+              fType:'Followers',
             });
             break;
           case 'Twitter':
@@ -98,6 +101,7 @@ class CoinProfile extends Component {
                 url: data.link,
                 icon: 'twitter',
                 Id: Math.random(),
+                fType:'Followers',
               });
             }
             break;
@@ -109,6 +113,7 @@ class CoinProfile extends Component {
                 url: data.url,
                 icon: 'reddit-alien',
                 Id: Math.random(),
+                fType:'Subscribers',
               });
             }
             break;
@@ -120,6 +125,7 @@ class CoinProfile extends Component {
                 url: data.link,
                 icon: 'facebook-f',
                 Id: Math.random(),
+                fType:'Likes',
               });
             }
             break;
@@ -135,14 +141,18 @@ class CoinProfile extends Component {
 
     const { coinPrice, loaded } = this.state;
     return (
+      <ParallaxScrollView
+            renderBackground={
+              () => <Image source={{uri: baseImageUrl + coin.ImageUrl}} style={styles.image}/>
+            }
+            backgroundColor={'#ffffff'}
+            parallaxHeaderHeight={300}
+          >
         <View style={styles.container}>
-          <Image source={{uri: baseImageUrl + coin.ImageUrl}} style={styles.image}/>
-
           <View style={styles.headLine}>
             <Text style={styles.mainText}>{coin.CoinName}</Text>
             <Text style={styles.subText}>{coin.Name}</Text>
           </View>
-
           {
             Object.keys(coinProfile).length > 0 &&
             <Text
@@ -150,23 +160,25 @@ class CoinProfile extends Component {
               ellipsizeMode={'tail'}
               style={styles.descriptionText}>{coinProfile.General.Description.replace(/<\/?[^>]+(>|$)/g, '')}</Text>
           }
+          <View style={styles.container}>
+            <View style={styles.socialList}>
+              <List
+                view={'coinSocials'}
+                data={this.socialInfo} />
+            </View>
+            <View style={styles.list}>
+              {
+                !loaded ? <ActivityIndicator size="large" color="#424242" style={styles.loader}/> :
+                <List
+                  view="coinProfile"
+                  data={coinPrice}
+                />
+              }
+            </View>
+          </View>
 
-          <List
-            style={styles.socialsList}
-            view={'coinSocials'}
-            data={this.socialInfo} />
-
-          <Text>Price against top currencies and coins</Text>
-
-          {
-            !loaded ? <ActivityIndicator size="large" color="#424242" style={styles.loader}/> :
-            <List
-              style={styles.list}
-              view="coinProfile"
-              data={coinPrice}
-            />
-          }
         </View>
+        </ParallaxScrollView>
     );
   }
 }
@@ -182,7 +194,7 @@ const styles = StyleSheet.create({
   },
   image: {
     height: 200,
-    width: '100%',
+    width: window.width,
     resizeMode: Image.resizeMode.contain,
     marginTop: 4,
   },
@@ -213,13 +225,11 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
-    justifyContent: 'flex-start',
-    marginTop: 16,
   },
-  socialsList: {
+  socialList: {
+    flex: 1,
+    minHeight: 130,
     marginTop: 8,
-    marginBottom: 8,
-    justifyContent: 'center',
   },
 });
 

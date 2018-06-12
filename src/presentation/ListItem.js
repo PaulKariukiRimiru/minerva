@@ -54,7 +54,7 @@ export default class ListItem extends Component {
           type={'font-awesome'}
         />
         <Text>{coin.name}</Text>
-        <Text>Followers</Text>
+        <Text>{coin.fType}</Text>
         <Text>{coin.followers}</Text>
       </View>
     );
@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    height: 100,
     margin: 4,
   },
   image: {
@@ -125,6 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 'auto',
     marginRight:'auto',
+    alignContent: 'flex-start',
   },
   button: {
     flex: 1,

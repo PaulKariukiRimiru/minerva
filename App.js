@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import { store } from './src/store';
 import Home from './src/pages/Home';
 import CoinProfile from './src/pages/Containers/CoinProfile';
-import WelcomePage from './src/pages/Containers/WelcomePage';
 import { createStackNavigator, createDrawerNavigator } from 'react-navigation';
 import {
   View,
@@ -14,7 +13,6 @@ const RenderScene = createStackNavigator(
   {
     home: Home,
     coinProfile: CoinProfile,
-    welcome: WelcomePage,
   },
   {
     initialRouteName: 'home',
