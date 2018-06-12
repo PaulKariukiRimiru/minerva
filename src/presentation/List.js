@@ -1,21 +1,20 @@
-import React, { Component } from 'react'
-import { View, FlatList, StyleSheet } from 'react-native';
+import React, { Component } from 'react';
+import { FlatList } from 'react-native';
 import ListItem from '../presentation/ListItem';
-import { baseImageUrl } from '../constants/axiosInstance';
 
 export default class MyList extends Component {
 
   state = {
-    refresh: false
+    refresh: false,
   }
 
   onPress = (coin) => {
-    this.props.onCoinSelected(coin)
+    this.props.onCoinSelected(coin);
   }
 
   renderItem = (coin) => {
     return (
-      <ListItem 
+      <ListItem
         coin={coin.item}
         view={this.props.view}
         onPress={this.onPress}
@@ -24,23 +23,23 @@ export default class MyList extends Component {
           {length: 60, offset: 60 * index, index}
         )}
       />
-    )
+    );
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props !== nextProps) {
       this.setState({
-        refresh: !this.state.refresh
-      })
+        refresh: !this.state.refresh,
+      });
     }
   }
 
   refreshData = () => {
-    this.props.refreshData()
+    this.props.refreshData();
   }
 
   render() {
-    const { data } = this.props
+    const { data } = this.props;
     return (
       <FlatList
         data={data}
@@ -52,14 +51,14 @@ export default class MyList extends Component {
         renderItem={this.renderItem}
         keyExtractor={(item, index) => item.Id}
         extraData={this.state.refresh}
-        getItemLayout={(data, index) => {
+        getItemLayout={(mydata, index) => {
           return ({
             length: 70,
             offset: 70 * index,
-            index
-          })
+            index,
+          });
         }}
       />
-    )
+    );
   }
 }

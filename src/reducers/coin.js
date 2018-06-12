@@ -5,11 +5,11 @@ const coin = (state = coins, action) => {
   switch (action.type) {
     case COIN_LIST_FETCHED:
       return {...state,
-        coinList: [...action.payload]
+        coinList: [...action.payload],
       };
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default coin
+export default coin;

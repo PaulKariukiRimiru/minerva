@@ -1,5 +1,5 @@
-import { FETCHING } from "../constants/actions";
+import { FETCHING } from '../constants/actions';
 
 export const fetching = () => ({
   type: FETCHING,
-})
+});

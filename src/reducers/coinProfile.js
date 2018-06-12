@@ -4,10 +4,10 @@ import { COIN_PROFILE_FETCHED } from '../constants/actions';
 const coinProfileReducer = (state = coinProfile, action) => {
   switch (action.type) {
     case COIN_PROFILE_FETCHED:
-      return {...action.payload}
+      return {...action.payload};
     default:
-      return state
+      return state;
   }
-}
+};
 
 export default coinProfileReducer;

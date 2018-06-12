@@ -3,12 +3,12 @@ import { COIN_LIST_FETCHED, ERRORED } from '../constants/actions';
 import { fetching } from './calls';
 const coinListFetchAction = (payload) => ({
   type: COIN_LIST_FETCHED,
-  payload
+  payload,
 });
 const errored = payload => ({
   type: ERRORED,
-  payload
-})
+  payload,
+});
 
 export const coinListFetch = callBack => (dispatch) => {
   dispatch(fetching());
@@ -17,13 +17,13 @@ export const coinListFetch = callBack => (dispatch) => {
       const coins = resp.data.Data;
       let payload = [];
       for (const coin in coins) {
-        payload.push(coins[coin])
-      };
+        payload.push(coins[coin]);
+      }
       return (dispatch(coinListFetchAction(payload)));
     })
     .then(() => callBack())
     .catch((error) => {
-      return(
+      return (
         dispatch(errored(error.message))
       );
     });

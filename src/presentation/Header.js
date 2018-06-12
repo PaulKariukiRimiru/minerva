@@ -4,31 +4,36 @@ import { Header, Icon, Text } from 'react-native-elements';
 
 export default class MyHeader extends Component {
   renderLeftComponent = () => (
-    <Icon name='menu' color='#FFFFFF' size={24}/>
+    <Icon name="menu" color="#FFFFFF" size={24}/>
   );
   renderCenterComponent = () => (
     <Text style={[styles.container, styles.headerText]}>Minerva</Text>
   );
-  
+
   renderRightComponent = () => (
-    <Icon name='more-vert' color='#FFFFFF' size={24}/>
+    <Icon name="more-vert" color="#FFFFFF" size={24}/>
   );
-  
+
   render() {
     return (
       <Header
         leftComponent={this.renderLeftComponent()}
         centerComponent={this.renderCenterComponent()}
         rightComponent={this.renderRightComponent()}
-        backgroundColor='#424242'
-        outerContainerStyles={{height: 80, padding: 10, justifyContent: 'center'}}
+        backgroundColor="#424242"
+        outerContainerStyles={styles.header}
       />
     );
-  };
-};
+  }
+}
 const styles = StyleSheet.create({
   container:{
     color: '#ffffff',
+  },
+  header: {
+    height: 80,
+    padding: 10,
+    justifyContent: 'center',
   },
   headerText: {
     fontSize: 24,

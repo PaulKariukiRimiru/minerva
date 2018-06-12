@@ -1,26 +1,22 @@
 import React, { Component } from 'react';
 import {
   ParallaxSwiper,
-  ParallaxSwiperPage
+  ParallaxSwiperPage,
 } from 'react-native-parallax-swiper';
 import {
   Animated,
-  Text,
   View,
   Image,
   StyleSheet,
-  Dimensions
+  Dimensions,
 } from 'react-native';
-import one from '../images/one.jpg'
-import two from '../images/two.jpg'
-import three from '../images/three.jpg'
 import { Button } from 'react-native-elements';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 
 class WelcomePage extends Component {
   static navigationOptions = {
-    header: null
+    header: null,
   }
 
   myCustomAnimatedValue = new Animated.Value(0);
@@ -32,13 +28,13 @@ class WelcomePage extends Component {
           inputRange: [
             (index - 1) * (width + 8), // Add 8 for dividerWidth
             index * (width + 8),
-            (index + 1) * (width + 8)
+            (index + 1) * (width + 8),
           ],
           outputRange: [0, 1, 0],
-          extrapolate: "clamp"
-        })
-      }
-    ]
+          extrapolate: 'clamp',
+        }),
+      },
+    ],
   });
 
   navigateToApp = () => {
@@ -83,9 +79,9 @@ class WelcomePage extends Component {
             />
           }
           ForegroundComponent={
-            <View style={[styles.foregroundTextContainer, {justifyContent: 'flex-end', marginBottom: 48}]}>
+            <View style={[styles.foregroundTextContainer]}>
               <Animated.Text
-                style={[styles.foregroundText, {fontSize: 24, fontWeight: '400', alignSelf: 'center',}, this.getPageTransformStyle(1)]}
+                style={[styles.foregroundText, this.getPageTransformStyle(1)]}
               >
                 We keep you connected to the ever changing crypto currency prices.
                 All you have to do is tap
@@ -107,9 +103,9 @@ class WelcomePage extends Component {
               >
                 Try it now...
               </Animated.Text>
-              <Button 
-                backgroundColor='#ff7043'
-                title='Sign up'
+              <Button
+                backgroundColor="#ff7043"
+                title="Sign up"
                 raised={true}
                 style={styles.button}
                 onPress={this.navigateToApp}
@@ -126,23 +122,25 @@ const styles = StyleSheet.create({
   backgroundImage: {
     width,
     height,
-    resizeMode: Image.resizeMode.fit
+    resizeMode: Image.resizeMode.fit,
   },
   foregroundTextContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "transparent"
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    justifyContent: 'flex-end',
+    marginBottom: 48,
   },
   foregroundText: {
-    fontSize: 34,
-    fontWeight: "700",
     letterSpacing: 0.41,
-    color: "white"
+    color: 'white',
+    fontSize: 24,
+    fontWeight: '400',
+    alignSelf: 'center',
   },
   button: {
     marginTop: 36,
-  }
+  },
 });
 
 export default WelcomePage;

@@ -5,8 +5,8 @@ export const baseInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-  }
-})
+  },
+});
 
 export const baseImageUrl = 'https://www.cryptocompare.com';
 export const baseSocketUrl = 'https://streamer.cryptocompare.com/';

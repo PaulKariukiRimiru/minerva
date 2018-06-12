@@ -3,9 +3,9 @@ import { users } from '../constants/initialStates';
 const user = (state = users, action) => {
   switch (action.type) {
     case 'ACTION_TYPE':
-      return 
+      return;
     default:
-      return state
+      return state;
   }
-}
+};
 export default user;

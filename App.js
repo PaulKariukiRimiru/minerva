@@ -5,18 +5,16 @@ import Home from './src/pages/Home';
 import CoinProfile from './src/pages/Containers/CoinProfile';
 import WelcomePage from './src/pages/Containers/WelcomePage';
 import { createStackNavigator, createDrawerNavigator } from 'react-navigation';
-import Header from './src/presentation/Header';
 import {
   View,
   StyleSheet,
-  Button
 } from 'react-native';
 
-RenderScene = createStackNavigator(
+const RenderScene = createStackNavigator(
   {
     home: Home,
     coinProfile: CoinProfile,
-    welcome: WelcomePage
+    welcome: WelcomePage,
   },
   {
     initialRouteName: 'home',
@@ -28,19 +26,19 @@ RenderScene = createStackNavigator(
       headerTintColor: '#fff',
       headerTitleStyle: {
         fontWeight: 'bold',
-      }
-    }
+      },
+    },
   }
-)
+);
 
-drawer = createDrawerNavigator({
+const drawer = createDrawerNavigator({
   home: {
-    screen: Home
+    screen: Home,
   },
   coinProfile: {
-    screen: CoinProfile
-  }
-})
+    screen: CoinProfile,
+  },
+});
 export default class App extends React.Component {
 
   render() {
@@ -60,6 +58,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   screnes: {
-    flex: 1
-  }
-})
+    flex: 1,
+  },
+});
