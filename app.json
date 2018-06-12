@@ -9,5 +9,7 @@
     "ios": {
       "bundleIdentifier": "com.yourcompany.yourappname"
     }
-  }
+  },
+  "name": "minerva",
+  "displayName": "Minerva"
 }

@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     width: window.width,
     resizeMode: Image.resizeMode.contain,
     marginTop: 4,
+    alignSelf: 'center',
   },
   mainText: {
     fontSize: 32,
