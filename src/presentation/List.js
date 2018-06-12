@@ -39,17 +39,18 @@ export default class MyList extends Component {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, view } = this.props;
     return (
       <FlatList
         data={data}
+        horizontal={view === 'coinSocials'}
         refreshing={false}
         removeClippedSubviews={true}
         maxToRenderPerBatch={1000}
         updateCellsBatchingPeriod={500}
         onRefresh={this.refreshData}
         renderItem={this.renderItem}
-        keyExtractor={(item, index) => item.Id}
+        keyExtractor={(item, index) => item.Id.toString()}
         extraData={this.state.refresh}
         getItemLayout={(mydata, index) => {
           return ({

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Image,Text, StyleSheet, TouchableHighlight } from 'react-native';
 import { baseImageUrl } from '../constants/axiosInstance';
+import { Icon } from 'react-native-elements';
+
 export default class ListItem extends Component {
 
   constructor(props){
@@ -42,6 +44,22 @@ export default class ListItem extends Component {
     );
   }
 
+  renderSocials = () => {
+    const { coin } = this.props;
+    return (
+      <View style={styles.socialContainer}>
+        <Icon
+          raised
+          name={coin.icon}
+          type={'font-awesome'}
+        />
+        <Text>{coin.name}</Text>
+        <Text>Followers</Text>
+        <Text>{coin.followers}</Text>
+      </View>
+    );
+  }
+
   render() {
     const { view } = this.props;
     switch (view) {
@@ -49,6 +67,8 @@ export default class ListItem extends Component {
         return this.renderHomeItem();
       case 'coinProfile':
         return this.renderCoinProfileItem();
+      case 'coinSocials':
+        return this.renderSocials();
       default:
         break;
     }
@@ -74,6 +94,12 @@ const styles = StyleSheet.create({
     margin: 8,
     backgroundColor: '#ffffff',
     borderRadius: 8,
+  },
+  socialContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 4,
   },
   image: {
     height: 40,

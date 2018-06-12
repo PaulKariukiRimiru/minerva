@@ -19,7 +19,7 @@ export const coinListFetch = callBack => (dispatch) => {
       for (const coin in coins) {
         payload.push(coins[coin]);
       }
-      return (dispatch(coinListFetchAction(payload)));
+      return (dispatch(coinListFetchAction(payload.sort((a, b) => parseInt(a.SortOrder, 10) - parseInt(b.SortOrder, 10)))));
     })
     .then(() => callBack())
     .catch((error) => {

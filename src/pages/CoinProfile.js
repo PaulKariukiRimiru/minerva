@@ -16,6 +16,7 @@ class CoinProfile extends Component {
       loaded: false,
     };
     this.socket = openSocket(baseSocketUrl);
+    this.socialInfo = [];
   }
 
   componentDidMount(){
@@ -25,6 +26,7 @@ class CoinProfile extends Component {
     fetchProfile(coin.Id, () => {
       fetchSocials(coin.Id, () => {
         const { coinProfile } = this.props;
+        this.processSocialInfo()
         this.socket.on('m', resp => this.updateCoinStatus(resp));
         this.socket.emit('SubAdd', { subs:  coinProfile.Subs } );
       });
@@ -38,7 +40,6 @@ class CoinProfile extends Component {
   }
 
   updateCoinStatus = (coin) => {
-    console.log('web socket resp', coin);
     const values = coin.split('~');
     const keys = ['Type', 'ExchangeName', 'FromCurrency', 'ToCurrency',
     'Flag', 'Price', 'LastUpdate', 'LastVolume', 'LastVolumeTo',
@@ -49,7 +50,6 @@ class CoinProfile extends Component {
     }
 
     if (priceSnapshot.ToCurrency) {
-      console.log('Found some data', this.state);
       const allowedCurrencies = ['USD', 'BTC', 'ETH'];
       if (allowedCurrencies.includes(priceSnapshot.ToCurrency)) {
         this.setState({
@@ -75,27 +75,97 @@ class CoinProfile extends Component {
     return array;
   }
 
+  processSocialInfo = () => {
+    const { coinSocials } = this.props;
+    Object.keys(coinSocials).length > 0 &&
+      Object.keys(coinSocials).map((dataKey, index) => {
+        const data = coinSocials[dataKey];
+        switch (dataKey) {
+          case 'CryptoCompare':
+            this.socialInfo.push({
+              name: dataKey,
+              followers: data.Followers,
+              url: '',
+              icon: '',
+              Id: Math.random(),
+            });
+            break;
+          case 'Twitter':
+            if (data.Points !== 0) {
+              this.socialInfo.push({
+                name: data.name,
+                followers: data.followers,
+                url: data.link,
+                icon: 'twitter',
+                Id: Math.random(),
+              });
+            }
+            break;
+          case 'Reddit':
+            if (data.Points !== 0) {
+              this.socialInfo.push({
+                name: data.name,
+                followers: data.subscribers,
+                url: data.url,
+                icon: 'reddit-alien',
+                Id: Math.random(),
+              });
+            }
+            break;
+          case 'Facebook':
+            if (data.Points !== 0) {
+              this.socialInfo.push({
+                name: data.name,
+                followers: data.likes,
+                url: data.link,
+                icon: 'facebook-f',
+                Id: Math.random(),
+              });
+            }
+            break;
+          default:
+            break;
+        }
+    });
+  }
+
   render() {
-    const { navigation } = this.props;
+    const { navigation, coinProfile } = this.props;
     const coin = navigation.getParam('coin');
 
     const { coinPrice, loaded } = this.state;
-
     return (
         <View style={styles.container}>
           <Image source={{uri: baseImageUrl + coin.ImageUrl}} style={styles.image}/>
+
           <View style={styles.headLine}>
             <Text style={styles.mainText}>{coin.CoinName}</Text>
             <Text style={styles.subText}>{coin.Name}</Text>
           </View>
+
+          {
+            Object.keys(coinProfile).length > 0 &&
+            <Text
+              numberOfLines={5}
+              ellipsizeMode={'tail'}
+              style={styles.descriptionText}>{coinProfile.General.Description.replace(/<\/?[^>]+(>|$)/g, '')}</Text>
+          }
+
+          <List
+            style={styles.socialsList}
+            view={'coinSocials'}
+            data={this.socialInfo} />
+
           <Text>Price against top currencies and coins</Text>
-            { !loaded ? <ActivityIndicator size="large" color="#424242" style={styles.loader}/> :
-              <List
-                style={styles.list}
-                view="coinProfile"
-                data={coinPrice}
-              />
-            }
+
+          {
+            !loaded ? <ActivityIndicator size="large" color="#424242" style={styles.loader}/> :
+            <List
+              style={styles.list}
+              view="coinProfile"
+              data={coinPrice}
+            />
+          }
         </View>
     );
   }
@@ -106,6 +176,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
+  },
+  socialsContainer: {
+    flexDirection: 'row',
   },
   image: {
     height: 200,
@@ -122,6 +195,13 @@ const styles = StyleSheet.create({
     fontWeight: '200',
     alignSelf: 'center',
   },
+  descriptionText: {
+    margin: 8,
+    fontSize: 14,
+    fontWeight: '100',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
   headLine: {
     marginTop: 12,
     marginBottom: 12,
@@ -135,6 +215,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     marginTop: 16,
+  },
+  socialsList: {
+    marginTop: 8,
+    marginBottom: 8,
+    justifyContent: 'center',
   },
 });
 
