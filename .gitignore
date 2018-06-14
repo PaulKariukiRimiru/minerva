@@ -15,6 +15,13 @@
 .env.test.local
 .env.production.local
 
+#android
+.idea/
+.gradle/
+build/
+release/
+gradle/
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
