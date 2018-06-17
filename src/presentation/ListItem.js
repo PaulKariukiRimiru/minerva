@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { View, Image,Text, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Image,Text, StyleSheet, TouchableHighlight, Dimensions } from 'react-native';
 import { baseImageUrl } from '../constants/axiosInstance';
 import { Icon } from 'react-native-elements';
 
+const window = Dimensions.get('window');
+let type = '1';
 export default class ListItem extends Component {
 
   constructor(props){
     super(props);
     this.coin = props.coin;
+    type = props.coin.FLAGS;
   }
 
   onPress = () => {
@@ -21,7 +24,7 @@ export default class ListItem extends Component {
         <TouchableHighlight style={styles.button} onPress={this.onPress} underlayColor="#e7e7e7">
           <View style={[styles.container]}>
             <Image source={{uri: baseImageUrl + coin.ImageUrl}} style={styles.image}/>
-            <View style={styles.textContainer}>
+            <View style={styles.textcontainer}>
               <Text>{coin.CoinName}</Text>
               <Text>{coin.Name}</Text>
             </View>
@@ -46,6 +49,7 @@ export default class ListItem extends Component {
 
   renderSocials = () => {
     const { coin } = this.props;
+    console.log('socials')
     return (
       <View style={styles.socialContainer}>
         <Icon
@@ -60,6 +64,47 @@ export default class ListItem extends Component {
     );
   }
 
+  renderExchanges = () => {
+    const { MARKET, FROMSYMBOL, TOSYMBOL, PRICE, OPEN24HOUR, HIGH24HOUR, LOW24HOUR, FLAGS } = this.props.coin;
+    const { exchangesContainer, subContainer, textContainer, textDescription, textData } = styles;
+    return (
+      <View style={[exchangesContainer, {borderColor: FLAGS === '1' ? '#4db6ac' : FLAGS === '2' ? '#ff8a65' : '#424242',}]}>
+        <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center',}}>
+          <Text numberOfLines={1} style={textDescription}>Price</Text>
+          <Text numberOfLines={1} style={[textData, { fontSize: 20, fontWeight: '400'}]}>{PRICE}</Text>
+        </View>
+        <View style={subContainer}>
+          <View style={textContainer}>
+            <Text numberOfLines={1} style={textDescription}>Market</Text>
+            <Text numberOfLines={1} style={textData}>{MARKET}</Text>
+          </View>
+          <View style={textContainer}>
+            <Text numberOfLines={1} style={textDescription}>From</Text>
+            <Text numberOfLines={1} style={textData}>{FROMSYMBOL}</Text>
+          </View>
+          <View style={textContainer}>
+            <Text numberOfLines={1} style={textDescription}>To</Text>
+            <Text numberOfLines={1} style={textData}>{TOSYMBOL}</Text>
+          </View>
+        </View>
+        <View style={subContainer}>
+          <View style={textContainer}>
+            <Text numberOfLines={1} style={textDescription}>Opening</Text>
+            <Text numberOfLines={1} style={textData}>{OPEN24HOUR}</Text>
+          </View>
+          <View style={textContainer}>
+            <Text numberOfLines={1} style={textDescription}>Highest</Text>
+            <Text numberOfLines={1} style={textData}>{HIGH24HOUR}</Text>
+          </View>
+          <View style={textContainer}>
+            <Text numberOfLines={1} style={textDescription}>Lowest</Text>
+            <Text numberOfLines={1} style={textData}>{LOW24HOUR}</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   render() {
     const { view } = this.props;
     switch (view) {
@@ -69,6 +114,8 @@ export default class ListItem extends Component {
         return this.renderCoinProfileItem();
       case 'coinSocials':
         return this.renderSocials();
+      case 'coinAggregate':
+        return this.renderExchanges();
       default:
         break;
     }
@@ -76,6 +123,37 @@ export default class ListItem extends Component {
 }
 
 const styles = StyleSheet.create({
+  exchangesContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: 330,
+    padding: 4,
+    margin: 4,
+    borderRadius: 4,
+    borderRightWidth: 1,
+  },
+  subContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  textContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  textDescription: {
+    fontSize: 12,
+    fontWeight: '100',
+  },
+  textData: {
+    fontSize: 15,
+    fontWeight: '400',
+  },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -108,7 +186,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
     resizeMode: Image.resizeMode.contain,
   },
-  textContainer: {
+  textcontainer: {
     justifyContent: 'flex-start',
     padding: 12,
   },

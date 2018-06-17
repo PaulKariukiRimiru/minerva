@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import ListItem from '../presentation/ListItem';
 
 export default class MyList extends Component {
@@ -50,7 +50,7 @@ export default class MyList extends Component {
         updateCellsBatchingPeriod={500}
         onRefresh={this.refreshData}
         renderItem={this.renderItem}
-        keyExtractor={(item, index) => item.Id.toString()}
+        keyExtractor={() => Math.random().toString(10)}
         extraData={this.state.refresh}
         getItemLayout={(mydata, index) => {
           return ({
@@ -63,3 +63,4 @@ export default class MyList extends Component {
     );
   }
 }
+

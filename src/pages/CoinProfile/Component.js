@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator, Dimensions } from 'react-native';
-import ParallaxScrollView from 'react-native-parallax-scroll-view';
-import { baseImageUrl, baseSocketUrl } from '../constants/axiosInstance';
-import openSocket from 'socket.io-client';
-import List from '../presentation/List';
+import { StyleSheet, Image, Dimensions } from 'react-native';
+import Render from './Render';
 
 const window = Dimensions.get('window');
 class CoinProfile extends Component {
@@ -13,32 +10,57 @@ class CoinProfile extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.inputRefs = {};
     this.state = {
       coinPrice: [],
       loaded: false,
+      selection: 'USD',
+      items: [
+        {
+          label: 'US Dollar',
+          value: 'USD',
+        },
+        {
+          label: 'Bitcoin',
+          value: 'BTC',
+        },
+        {
+          label: 'Etherium',
+          value: 'ETH',
+        },
+        {
+          label: 'Litcoin',
+          value: 'LTC',
+        },
+        {
+          label: 'DigitalCash',
+          value: 'DASH',
+        },
+    ],
     };
-    this.socket = openSocket(baseSocketUrl);
+    //this.socket = openSocket(baseSocketUrl);
     this.socialInfo = [];
   }
 
   componentDidMount(){
-    const { navigation, fetchProfile, fetchSocials } = this.props;
+    const { navigation, fetchProfile, fetchSocials, fetchAggregate } = this.props;
     const coin = navigation.getParam('coin');
-
-    fetchProfile(coin.Id, () => {
-      fetchSocials(coin.Id, () => {
-        const { coinProfile } = this.props;
-        this.processSocialInfo();
-        this.socket.on('m', resp => this.updateCoinStatus(resp));
-        this.socket.emit('SubAdd', { subs:  coinProfile.Subs } );
+    fetchAggregate(coin.Name, 'USD', () => {
+      fetchProfile(coin.Id, () => {
+        fetchSocials(coin.Id, () => {
+          //const { coinProfile } = this.props;
+          this.processSocialInfo();
+          // this.socket.on('m', resp => this.updateCoinStatus(resp));
+          // this.socket.emit('SubAdd', { subs:  coinProfile.Subs } );
+        });
       });
     });
   }
 
   componentWillUnmount() {
-    const { coinProfile } = this.props;
-    this.socket.emit('SubRemove', { subs: coinProfile.Subs } );
-    this.socket.close();
+    // const { coinProfile } = this.props;
+    // this.socket.emit('SubRemove', { subs: coinProfile.Subs } );
+    // this.socket.close();
   }
 
   updateCoinStatus = (coin) => {
@@ -53,7 +75,7 @@ class CoinProfile extends Component {
 
     if (priceSnapshot.ToCurrency) {
       const allowedCurrencies = ['USD', 'BTC', 'ETH'];
-      if (allowedCurrencies.includes(priceSnapshot.ToCurrency)) {
+      if (allowedCurrencies.includes(priceSnapshot.ToCurrency) && priceSnapshot.Flag !== '4') {
         this.setState({
           coinPrice: this.addOrReplace(this.state.coinPrice,
             {
@@ -136,50 +158,7 @@ class CoinProfile extends Component {
   }
 
   render() {
-    const { navigation, coinProfile } = this.props;
-    const coin = navigation.getParam('coin');
-
-    const { coinPrice, loaded } = this.state;
-    return (
-      <ParallaxScrollView
-            renderBackground={
-              () => <Image source={{uri: baseImageUrl + coin.ImageUrl}} style={styles.image}/>
-            }
-            backgroundColor={'#ffffff'}
-            parallaxHeaderHeight={300}
-          >
-        <View style={styles.container}>
-          <View style={styles.headLine}>
-            <Text style={styles.mainText}>{coin.CoinName}</Text>
-            <Text style={styles.subText}>{coin.Name}</Text>
-          </View>
-          {
-            Object.keys(coinProfile).length > 0 &&
-            <Text
-              numberOfLines={5}
-              ellipsizeMode={'tail'}
-              style={styles.descriptionText}>{coinProfile.General.Description.replace(/<\/?[^>]+(>|$)/g, '')}</Text>
-          }
-          <View style={styles.container}>
-            <View style={styles.socialList}>
-              <List
-                view={'coinSocials'}
-                data={this.socialInfo} />
-            </View>
-            <View style={styles.list}>
-              {
-                !loaded ? <ActivityIndicator size="large" color="#424242" style={styles.loader}/> :
-                <List
-                  view="coinProfile"
-                  data={coinPrice}
-                />
-              }
-            </View>
-          </View>
-
-        </View>
-        </ParallaxScrollView>
-    );
+    return Render.bind(this)(styles, pickerSelectStyles);
   }
 }
 
@@ -193,7 +172,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   image: {
-    height: 200,
+    height: 150,
     width: window.width,
     resizeMode: Image.resizeMode.contain,
     marginTop: 4,
@@ -231,6 +210,25 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 130,
     marginTop: 8,
+  },
+  picker: {
+    height: 50,
+    width: 100,
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+      flex: 1,
+      fontSize: 16,
+      paddingTop: 13,
+      paddingHorizontal: 10,
+      paddingBottom: 12,
+      borderWidth: 1,
+      borderColor: '#424242',
+      borderRadius: 2,
+      backgroundColor: 'white',
+      color: 'black',
   },
 });
 
