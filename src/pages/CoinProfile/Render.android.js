@@ -29,10 +29,13 @@ export default function render(styles, pickerSelectStyles) {
         <View style={{flex: 1, alignItems: 'center',}}>
           <Picker
             selectedValue={this.state.language}
-            style={{ height: 50, width: 100 }}
+            style={{ height: 50, width: 300 }}
             onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
-            <Picker.Item label="Java" value="java" />
-            <Picker.Item label="JavaScript" value="js" />
+            <Picker.Item label="US Dollar" value="USD" />
+            <Picker.Item label="Bitcoin" value="BTC" />
+            <Picker.Item label="Etherium" value="ETH" />
+            <Picker.Item label="Litcoin" value="LTC" />
+            <Picker.Item label="DigitalCash" value="DASH" />
           </Picker>
         </View>
         <View style={styles.list}>
