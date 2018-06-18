@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import { View, Image,Text, StyleSheet, TouchableHighlight, Dimensions } from 'react-native';
+import { View, Image,Text, StyleSheet, TouchableHighlight } from 'react-native';
 import { baseImageUrl } from '../constants/axiosInstance';
 import { Icon } from 'react-native-elements';
 
-const window = Dimensions.get('window');
-let type = '1';
 export default class ListItem extends Component {
 
   constructor(props){
     super(props);
     this.coin = props.coin;
-    type = props.coin.FLAGS;
   }
 
   onPress = () => {
@@ -65,14 +62,23 @@ export default class ListItem extends Component {
 
   renderExchanges = () => {
     const { MARKET, TOSYMBOL, PRICE, OPEN24HOUR, HIGH24HOUR, LOW24HOUR, FLAGS } = this.props.coin;
-    const { exchangesContainer, subContainer, textContainer, textDescription, textData } = styles;
+    const {
+      exchangesContainer,
+      subContainer,
+      textContainer,
+      textDescription,
+      textData,
+      pricetextContainer,
+      mainPriceText,
+      marketTextContainer,
+    } = styles;
     return (
       <View style={exchangesContainer}>
-        <View style={{flex: 1, flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center',}}>
-          <Text numberOfLines={1} style={[textData, { fontSize: 18, fontWeight: '400'}]}>{TOSYMBOL} {PRICE}</Text>
+        <View style={pricetextContainer}>
+          <Text numberOfLines={1} style={[textData, mainPriceText]}>{TOSYMBOL} {PRICE}</Text>
         </View>
         <View style={subContainer}>
-          <View style={{flex: 1, flexDirection: 'row',justifyContent: 'space-between',}}>
+          <View style={marketTextContainer}>
             <Text numberOfLines={1} style={textDescription}>Market {MARKET}</Text>
             <Text numberOfLines={1} style={[textDescription, { color: FLAGS === '1' ? '#ff8a65' : FLAGS === '2' ? '#4db6ac' : '#424242',}]}>
               Price {FLAGS === '1' ? 'dropping' : FLAGS === '2' ? 'increasing' : 'unchanged'}
@@ -132,6 +138,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'flex-start',
+  },
+  pricetextContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  mainPriceText: {
+    fontSize: 18,
+    fontWeight: '400',
+  },
+  marketTextContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   textContainer: {
     flex: 1,

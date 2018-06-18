@@ -6,8 +6,11 @@ import List from '../../presentation/List';
 import RNPickerSelect from 'react-native-picker-select';
 
 export default function render (styles, pickerSelectStyles) {
-  const { navigation, coinAggregate } = this.props;
+  const { navigation, coinAggregate, fetchAggregate } = this.props;
+  const { loaded } = this.state;
     const coin = navigation.getParam('coin');
+    let socialList = [];
+    socialList =  this.processSocialInfo();
     return (
       <ParallaxScrollView
             renderBackground={
@@ -24,7 +27,7 @@ export default function render (styles, pickerSelectStyles) {
           <View style={styles.socialList}>
             <List
               view="coinSocials"
-              data={this.socialInfo} />
+              data={socialList} />
           </View>
           <Text>Select a coin to compare {coin.CoinName} to:</Text>
           <View style={{flex: 1, alignItems: 'center',}}>
@@ -35,10 +38,12 @@ export default function render (styles, pickerSelectStyles) {
               }}
               items={this.state.items}
               onValueChange={(value) => {
-                  this.setState({
-                      selection: value,
-                  });
-              }}
+                fetchAggregate(coin.Name, value, () => {});
+                this.setState({
+                    selection: value,
+                });
+                }
+              }
               onUpArrow={() => {
                   this.inputRefs.name.focus();
               }}
@@ -58,7 +63,7 @@ export default function render (styles, pickerSelectStyles) {
                 <List
                   view="coinAggregate"
                   data={coinAggregate.Exchanges}
-                  /> :
+                  /> : loaded ? <Text style={styles.sorryMessage}>Sorry we couldnt find data for that combination. Try another :(</Text> :
                 <ActivityIndicator size={'large'} color={'#424242'} style={styles.loader} />
             }
           </View>

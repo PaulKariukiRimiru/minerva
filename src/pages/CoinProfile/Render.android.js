@@ -5,8 +5,12 @@ import { baseImageUrl } from '../../constants/axiosInstance';
 import List from '../../presentation/List';
 
 export default function render(styles, pickerSelectStyles) {
-  const { navigation, coinAggregate } = this.props;
+  const { navigation, coinAggregate, fetchAggregate } = this.props;
+  const { loaded } = this.state;
+  
   const coin = navigation.getParam('coin');
+  let socialList = [];
+  socialList =  this.processSocialInfo();
   return (
     <ParallaxScrollView
           renderBackground={
@@ -23,14 +27,20 @@ export default function render(styles, pickerSelectStyles) {
         <View style={styles.socialList}>
           <List
             view="coinSocials"
-            data={this.socialInfo} />
+            data={socialList} />
         </View>
         <Text>Select a coin to compare {coin.CoinName} to:</Text>
         <View style={{flex: 1, alignItems: 'center',}}>
           <Picker
-            selectedValue={this.state.language}
+            selectedValue={this.state.value}
             style={{ height: 50, width: 300 }}
-            onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
+            onValueChange={(itemValue, itemIndex) => {
+              fetchAggregate(coin.Name, itemValue, () => {});
+              this.setState({
+                  value: itemValue,
+              });
+              }
+            }>
             <Picker.Item label="US Dollar" value="USD" />
             <Picker.Item label="Bitcoin" value="BTC" />
             <Picker.Item label="Etherium" value="ETH" />
@@ -44,8 +54,8 @@ export default function render(styles, pickerSelectStyles) {
               <List
                 view="coinAggregate"
                 data={coinAggregate.Exchanges}
-                /> :
-              <ActivityIndicator size={'large'} color={'#424242'} style={styles.loader} />
+                /> : loaded ? <Text style={styles.sorryMessage}>Sorry we couldnt find data for that combination. Try another :(</Text> :
+                  <ActivityIndicator size={'large'} color={'#424242'} style={styles.loader} />
           }
         </View>
       </View>

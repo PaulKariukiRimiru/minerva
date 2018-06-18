@@ -14,6 +14,7 @@ class CoinProfile extends Component {
     this.state = {
       coinPrice: [],
       loaded: false,
+      socialInfo: [],
       selection: 'USD',
       items: [
         {
@@ -39,7 +40,6 @@ class CoinProfile extends Component {
     ],
     };
     //this.socket = openSocket(baseSocketUrl);
-    this.socialInfo = [];
   }
 
   componentDidMount(){
@@ -50,6 +50,9 @@ class CoinProfile extends Component {
         fetchSocials(coin.Id, () => {
           //const { coinProfile } = this.props;
           this.processSocialInfo();
+          this.setState({
+            loaded: true,
+          });
           // this.socket.on('m', resp => this.updateCoinStatus(resp));
           // this.socket.emit('SubAdd', { subs:  coinProfile.Subs } );
         });
@@ -101,60 +104,58 @@ class CoinProfile extends Component {
 
   processSocialInfo = () => {
     const { coinSocials } = this.props;
+    let myList = [];
     Object.keys(coinSocials).length > 0 &&
       Object.keys(coinSocials).map((dataKey, index) => {
         const data = coinSocials[dataKey];
-        switch (dataKey) {
-          case 'CryptoCompare':
-            this.socialInfo.push({
-              name: dataKey,
-              followers: data.Followers,
-              url: '',
-              icon: '',
-              Id: Math.random(),
-              fType:'Followers',
-            });
-            break;
-          case 'Twitter':
-            if (data.Points !== 0) {
-              this.socialInfo.push({
-                name: data.name,
-                followers: data.followers,
-                url: data.link,
-                icon: 'twitter',
-                Id: Math.random(),
-                fType:'Followers',
-              });
-            }
-            break;
-          case 'Reddit':
-            if (data.Points !== 0) {
-              this.socialInfo.push({
-                name: data.name,
-                followers: data.subscribers,
-                url: data.url,
-                icon: 'reddit-alien',
-                Id: Math.random(),
-                fType:'Subscribers',
-              });
-            }
-            break;
-          case 'Facebook':
-            if (data.Points !== 0) {
-              this.socialInfo.push({
-                name: data.name,
-                followers: data.likes,
-                url: data.link,
-                icon: 'facebook-f',
-                Id: Math.random(),
-                fType:'Likes',
-              });
-            }
-            break;
-          default:
-            break;
+        if (data.Points !== 0) {
+          switch (dataKey) {
+            case 'CryptoCompare':
+              myList.push({
+                    name: dataKey,
+                    followers: data.Followers,
+                    url: '',
+                    icon: 'home',
+                    Id: Math.random(),
+                    fType:'Followers',
+                  });
+              break;
+            case 'Twitter':
+                myList.push({
+                    name: data.name,
+                    followers: data.followers,
+                    url: data.link,
+                    icon: 'twitter',
+                    Id: Math.random(),
+                    fType:'Followers',
+                  });
+              break;
+            case 'Reddit':
+              myList.push({
+                    name: data.name,
+                    followers: data.subscribers,
+                    url: data.url,
+                    icon: 'reddit-alien',
+                    Id: Math.random(),
+                    fType:'Subscribers',
+                  });
+              break;
+            case 'Facebook':
+              myList.push({
+                    name: data.name,
+                    followers: data.likes,
+                    url: data.link,
+                    icon: 'facebook-f',
+                    Id: Math.random(),
+                    fType:'Likes',
+                  });
+              break;
+            default:
+              break;
+          }
         }
     });
+    return myList;
   }
 
   render() {
@@ -214,6 +215,15 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     width: 100,
+    marginTop: 4,
+    marginBottom: 4,
+  },
+  sorryMessage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    fontSize: 20,
   },
 });
 
@@ -229,6 +239,9 @@ const pickerSelectStyles = StyleSheet.create({
       borderRadius: 2,
       backgroundColor: 'white',
       color: 'black',
+      marginTop: 4,
+      marginBottom: 4,
+      width: 150,
   },
 });
 
