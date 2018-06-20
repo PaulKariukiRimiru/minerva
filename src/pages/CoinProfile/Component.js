@@ -72,6 +72,12 @@ class CoinProfile extends Component {
     });
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({
+      socialInfo: this.processSocialInfo(nextProps),
+    });
+  }
+
   componentWillUnmount() {
     // const { coinProfile } = this.props;
     // this.socket.emit('SubRemove', { subs: coinProfile.Subs } );
@@ -106,6 +112,62 @@ class CoinProfile extends Component {
     }
   }
 
+  processSocialInfo = (props) => {
+    const { coinSocials } = props;
+    let myList = [];
+    Object.keys(coinSocials).length > 0 &&
+      Object.keys(coinSocials).map((dataKey, index) => {
+        const data = coinSocials[dataKey];
+        if (data.Points !== 0) {
+          switch (dataKey) {
+            case 'CryptoCompare':
+              myList.push({
+                    name: dataKey,
+                    followers: data.Followers,
+                    url: '',
+                    icon: 'home',
+                    Id: Math.random(),
+                    fType:'Followers',
+                  });
+              break;
+            case 'Twitter':
+                myList.push({
+                    name: data.name,
+                    followers: data.followers,
+                    url: data.link,
+                    icon: 'twitter',
+                    Id: Math.random(),
+                    fType:'Followers',
+                  });
+              break;
+            case 'Reddit':
+              myList.push({
+                    name: data.name,
+                    followers: data.subscribers,
+                    url: data.url,
+                    icon: 'reddit-alien',
+                    Id: Math.random(),
+                    fType:'Subscribers',
+                  });
+              break;
+            case 'Facebook':
+              myList.push({
+                    name: data.name,
+                    followers: data.likes,
+                    url: data.link,
+                    icon: 'facebook-f',
+                    Id: Math.random(),
+                    fType:'Likes',
+                  });
+              break;
+            default:
+              break;
+          }
+        }
+    });
+    return myList;
+  };
+
   addOrReplace = (array, priceItem) => {
     const i = array.findIndex(item => item.currency === priceItem.currency);
     if (i > -1) {array[i] = priceItem;}
@@ -136,6 +198,7 @@ class CoinProfile extends Component {
                 downArrow={this.downArrow}
                 upArrow={this.upArrow}
                 ref={this.ref}
+                socialInfo={this.state.socialInfo}
                 />;
     case 'liveStream':
       return <LiveStream />;
@@ -155,8 +218,8 @@ class CoinProfile extends Component {
       style={styles.tab}
       pressColor={'#e7e7e7'}
       labelStyle={styles.tabLabel}
-      bounces={true}
       indicatorStyle={styles.indicator}
+      canJumpToTab={() => true}
       useNativeDriver
     />
   );
@@ -167,7 +230,7 @@ class CoinProfile extends Component {
 
   render() {
     const { navigation } = this.props;
-    const { navigationState } = this.state;
+    const { navigationState, socialInfo } = this.state;
     const coin = navigation.getParam('coin');
 
     return (
@@ -182,12 +245,14 @@ class CoinProfile extends Component {
             <Text style={styles.subText}>{coin.Name}</Text>
           </View>
           <TabView
+            style={styles.tabView}
             navigationState={navigationState}
             renderScene={this.renderScene}
             onIndexChange={this.indexChange}
             initialLayout={{ height: 0, width: Dimensions.get('window').width }}
             renderTabBar={this.renderTabBar}
             renderPager={this.renderPage}
+            useNativeDriver
           />
       </ParallaxScrollView>
     );
@@ -199,6 +264,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
+    overflow: 'hidden',
+    zIndex: 1,
   },
   socialsContainer: {
     flexDirection: 'row',
@@ -265,6 +332,9 @@ const styles = StyleSheet.create({
   },
   indicator: {
     backgroundColor: '#424242',
+  },
+  tabView: {
+    flex: 1,
   },
 });
 

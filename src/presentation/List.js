@@ -52,6 +52,8 @@ export default class MyList extends Component {
         renderItem={this.renderItem}
         keyExtractor={() => Math.random().toString(10)}
         extraData={this.state.refresh}
+        contentInset={{bottom:49}}
+        automaticallyAdjustContentInsets={false}
         getItemLayout={(mydata, index) => {
           return ({
             length: 70,
