@@ -15,7 +15,7 @@ public class MainActivity extends ReactActivity {
     protected String getMainComponentName() {
         return "minerva";
     }
-    
+
     @Override
     protected ReactActivityDelegate createReactActivityDelegate() {
         return new ReactActivityDelegate(this, getMainComponentName()) {

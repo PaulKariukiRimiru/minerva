@@ -1,26 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 
-import { connect } from 'react-redux';
-import {
-  coinListFetch,
-} from '../actions/coin';
-
 import List from '../presentation/List';
 import { SearchBar } from 'react-native-elements';
 
-const mapStateToProps = (state, ownProps) => ({
-  coin: state.coin,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  fetchCoinList: (callBack) => {
-    dispatch(coinListFetch(callBack));
-  },
-});
-
-
-class Home extends Component {
+export default class Home extends Component {
 
   constructor(props) {
     super(props);
@@ -33,7 +17,8 @@ class Home extends Component {
   };
 
   componentDidMount() {
-    this.props.fetchCoinList(() => {
+    const { fetchCoinList } = this.props;
+    fetchCoinList(() => {
       this.setState({ coins: this.props.coin.coinList });
     });
   }
@@ -100,5 +85,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#424242',
   },
 });
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);

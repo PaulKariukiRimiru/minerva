@@ -1,7 +1,14 @@
 import React from 'react';
-import { View, Text, ActivityIndicator, Picker } from 'react-native';
+import { View, Text, ActivityIndicator, Picker, StyleSheet } from 'react-native';
 import List from '../../presentation/List';
 class aggregateComparison extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 'USD',
+    };
+  }
+
   render() {
     const { styles, myprops, state, socialInfo } = this.props;
     const { navigation, coinAggregate, fetchAggregate } = myprops;
@@ -15,10 +22,10 @@ class aggregateComparison extends React.Component{
             data={socialInfo} />
         </View>
         <Text>Select a coin to compare {coin.CoinName} to:</Text>
-        <View style={{ flex: 1, alignItems: 'center', }}>
+        <View style={_styles.pickerContainer}>
           <Picker
             selectedValue={state.value}
-            style={{ height: 50, width: 300 }}
+            style={_styles.picker}
             onValueChange={(itemValue, itemIndex) => {
               fetchAggregate(coin.Name, itemValue, () => {});
               this.setState({
@@ -47,6 +54,17 @@ class aggregateComparison extends React.Component{
       </View>
     );
   }
-};
+}
+
+const _styles = StyleSheet.create({
+  pickerContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  picker: {
+    height: 50,
+    width: 300,
+  },
+});
 
 export default aggregateComparison;

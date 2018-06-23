@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, Dimensions, View, Text } from 'react-native';
+import { StyleSheet, Image, Dimensions, View, Text, ActivityIndicator } from 'react-native';
 import AggregateComparison from './Aggregate';
 import LiveStream from './LiveStream';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
@@ -15,6 +15,8 @@ class CoinProfile extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.high = 0,
+    this.low = 0,
     this.inputRefs = {};
     this.state = {
       coinPrice: [],
@@ -55,18 +57,25 @@ class CoinProfile extends Component {
   }
 
   componentDidMount(){
-    const { navigation, fetchProfile, fetchSocials, fetchAggregate } = this.props;
+    const { navigation, coinProfile,fetchProfile, fetchSocials, fetchAggregate, fetchPriceHistory } = this.props;
     const coin = navigation.getParam('coin');
     fetchAggregate(coin.Name, 'USD', () => {
       fetchProfile(coin.Id, () => {
         fetchSocials(coin.Id, () => {
-          //const { coinProfile } = this.props;
-          this.processSocialInfo();
-          this.setState({
-            loaded: true,
+          fetchPriceHistory(coin.Name, 'USD', Object.keys(coinProfile) > 0 ? coinProfile.aggregate.AggregatedData.MARKET : 'CCCAGG', () => {
+            //const { coinProfile } = this.props;
+            if (Object.keys(coinProfile) > 0 ) {
+              const { HIGH24HOUR, LOW24HOUR } = coinProfile.aggregate.AggregatedData;
+              this.high = HIGH24HOUR;
+              this.low = LOW24HOUR;
+            }
+            this.processSocialInfo();
+            this.setState({
+              loaded: true,
+            });
+            // this.socket.on('m', resp => this.updateCoinStatus(resp));
+            // this.socket.emit('SubAdd', { subs:  coinProfile.Subs } );
           });
-          // this.socket.on('m', resp => this.updateCoinStatus(resp));
-          // this.socket.emit('SubAdd', { subs:  coinProfile.Subs } );
         });
       });
     });
@@ -113,7 +122,7 @@ class CoinProfile extends Component {
   }
 
   processSocialInfo = (props) => {
-    const { coinSocials } = props;
+    const { coinSocials } = this.props;
     let myList = [];
     Object.keys(coinSocials).length > 0 &&
       Object.keys(coinSocials).map((dataKey, index) => {
@@ -187,6 +196,7 @@ class CoinProfile extends Component {
   }
 
   renderScene = ({ route }) => {
+    const { coinHistory } = this.props;
     switch (route.key) {
     case 'comparison':
       return <AggregateComparison
@@ -201,7 +211,13 @@ class CoinProfile extends Component {
                 socialInfo={this.state.socialInfo}
                 />;
     case 'liveStream':
-      return <LiveStream />;
+      return <LiveStream
+                data={coinHistory.data}
+                high={this.high}
+                low={this.low}
+                from={coinHistory.from}
+                to={coinHistory.to}
+                />;
     default:
       return null;
     }
@@ -230,31 +246,37 @@ class CoinProfile extends Component {
 
   render() {
     const { navigation } = this.props;
-    const { navigationState, socialInfo } = this.state;
+    const { navigationState, socialInfo, loaded } = this.state;
     const coin = navigation.getParam('coin');
 
     return (
-      <ParallaxScrollView
-          renderBackground={
-            () => <Image source={{uri: baseImageUrl + coin.ImageUrl}} style={styles.image}/>
-          }
-          backgroundColor={'#ffffff'}
-          parallaxHeaderHeight={180}>
-          <View style={styles.headLine}>
-            <Text style={styles.mainText}>{coin.CoinName}</Text>
-            <Text style={styles.subText}>{coin.Name}</Text>
-          </View>
-          <TabView
-            style={styles.tabView}
-            navigationState={navigationState}
-            renderScene={this.renderScene}
-            onIndexChange={this.indexChange}
-            initialLayout={{ height: 0, width: Dimensions.get('window').width }}
-            renderTabBar={this.renderTabBar}
-            renderPager={this.renderPage}
-            useNativeDriver
-          />
-      </ParallaxScrollView>
+      <View style={styles.container}>
+        { loaded ?
+          <ParallaxScrollView
+            renderBackground={
+              () => <Image source={{uri: baseImageUrl + coin.ImageUrl}} style={styles.image}/>
+            }
+            backgroundColor={'#ffffff'}
+            parallaxHeaderHeight={180}>
+            <View style={styles.headLine}>
+              <Text style={styles.mainText}>{coin.CoinName}</Text>
+              <Text style={styles.subText}>{coin.Name}</Text>
+            </View>
+            <TabView
+              style={styles.tabView}
+              navigationState={navigationState}
+              renderScene={this.renderScene}
+              onIndexChange={this.indexChange}
+              initialLayout={{ height: 0, width: Dimensions.get('window').width }}
+              renderTabBar={this.renderTabBar}
+              renderPager={this.renderPage}
+              useNativeDriver
+            />
+          </ParallaxScrollView>
+          :
+          <ActivityIndicator size="large" color="#424242" style={styles.loader}/>
+        }
+      </View>
     );
   }
 }

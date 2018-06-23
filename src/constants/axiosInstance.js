@@ -8,5 +8,13 @@ export const baseInstance = axios.create({
   },
 });
 
+export const baseMiniInstance = axios.create({
+  baseURL: 'https://min-api.cryptocompare.com',
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
+
 export const baseImageUrl = 'https://www.cryptocompare.com';
 export const baseSocketUrl = 'https://streamer.cryptocompare.com/';
