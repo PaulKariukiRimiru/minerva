@@ -4,15 +4,12 @@ import List from '../../presentation/List';
 class aggregateComparison extends React.Component{
   constructor(props) {
     super(props);
-    this.state = {
-      value: 'USD',
-    };
   }
 
   render() {
-    const { styles, myprops, state, socialInfo } = this.props;
+    const { styles, myprops, state, socialInfo, onValueChange} = this.props;
     const { navigation, coinAggregate, fetchAggregate } = myprops;
-    const { loaded } = state;
+    const { loaded, selection } = state;
     const coin = navigation.getParam('coin');
     return (
       <View style={styles.container}>
@@ -24,13 +21,11 @@ class aggregateComparison extends React.Component{
         <Text>Select a coin to compare {coin.CoinName} to:</Text>
         <View style={_styles.pickerContainer}>
           <Picker
-            selectedValue={state.value}
+            selectedValue={selection}
             style={_styles.picker}
             onValueChange={(itemValue, itemIndex) => {
               fetchAggregate(coin.Name, itemValue, () => {});
-              this.setState({
-                  value: itemValue,
-              });
+              onValueChange(itemValue);
               }
             }>
             <Picker.Item label="US Dollar" value="USD" />

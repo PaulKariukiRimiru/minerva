@@ -3,9 +3,10 @@ import { StyleSheet, Image, Dimensions, View, Text, ActivityIndicator } from 're
 import AggregateComparison from './Aggregate';
 import LiveStream from './LiveStream';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
-import { baseImageUrl } from '../../constants/axiosInstance';
+import { baseImageUrl, baseSocketUrl } from '../../constants/axiosInstance';
 import { TabView, TabBar, PagerExperimental } from 'react-native-tab-view';
 import * as GestureHandler from 'react-native-gesture-handler';
+import openSocket from 'socket.io-client';
 
 const window = Dimensions.get('window');
 class CoinProfile extends Component {
@@ -15,11 +16,13 @@ class CoinProfile extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.high = 0,
-    this.low = 0,
+    this.high = 0;
+    this.low = 0;
     this.inputRefs = {};
+    this.sub = '';
     this.state = {
       coinPrice: [],
+      currentPrice: '',
       loaded: false,
       socialInfo: [],
       selection: 'USD',
@@ -53,7 +56,6 @@ class CoinProfile extends Component {
         },
     ],
     };
-    //this.socket = openSocket(baseSocketUrl);
   }
 
   componentDidMount(){
@@ -63,7 +65,6 @@ class CoinProfile extends Component {
       fetchProfile(coin.Id, () => {
         fetchSocials(coin.Id, () => {
           fetchPriceHistory(coin.Name, 'USD', Object.keys(coinProfile) > 0 ? coinProfile.aggregate.AggregatedData.MARKET : 'CCCAGG', () => {
-            //const { coinProfile } = this.props;
             if (Object.keys(coinProfile) > 0 ) {
               const { HIGH24HOUR, LOW24HOUR } = coinProfile.aggregate.AggregatedData;
               this.high = HIGH24HOUR;
@@ -73,8 +74,6 @@ class CoinProfile extends Component {
             this.setState({
               loaded: true,
             });
-            // this.socket.on('m', resp => this.updateCoinStatus(resp));
-            // this.socket.emit('SubAdd', { subs:  coinProfile.Subs } );
           });
         });
       });
@@ -87,10 +86,19 @@ class CoinProfile extends Component {
     });
   }
 
-  componentWillUnmount() {
-    // const { coinProfile } = this.props;
-    // this.socket.emit('SubRemove', { subs: coinProfile.Subs } );
-    // this.socket.close();
+  startPriceStream = () => {
+    const { coinProfile, navigation } = this.props;
+    const coin = navigation.getParam('coin');
+    this.socket = openSocket(baseSocketUrl);
+    this.sub = '2~' + 'LocalBitcoins' + '~' + coin.Name + '~USD';
+    console.log('sub', this.sub)
+    this.socket.on('m', resp => this.updateCoinStatus(resp));
+    this.socket.emit('SubAdd', { subs:  [this.sub] } );
+  }
+
+  stopPriceStream = () => {
+    this.socket.emit('SubRemove', { subs: [this.sub] } );
+    this.socket.close();
   }
 
   updateCoinStatus = (coin) => {
@@ -109,12 +117,10 @@ class CoinProfile extends Component {
         this.setState({
           coinPrice: this.addOrReplace(this.state.coinPrice,
             {
-              Id: Math.random(),
-              currency: priceSnapshot.ToCurrency,
-              price: priceSnapshot.Price,
-              flag: priceSnapshot.Flag,
-              exchange: priceSnapshot.ExchangeName,
+              x: priceSnapshot.Price,
+              y: new Date(),
             }),
+          currentPrice: priceSnapshot.Price,
           loaded: true,
         });
       }
@@ -212,11 +218,14 @@ class CoinProfile extends Component {
                 />;
     case 'liveStream':
       return <LiveStream
-                data={coinHistory.data}
+                data={this.state.coinPrice}
                 high={this.high}
                 low={this.low}
                 from={coinHistory.from}
                 to={coinHistory.to}
+                startStream={this.startPriceStream}
+                stopStream={this.stopPriceStream}
+                currentPrice={this.state.currentPrice}
                 />;
     default:
       return null;
@@ -246,7 +255,7 @@ class CoinProfile extends Component {
 
   render() {
     const { navigation } = this.props;
-    const { navigationState, socialInfo, loaded } = this.state;
+    const { navigationState, loaded } = this.state;
     const coin = navigation.getParam('coin');
 
     return (
